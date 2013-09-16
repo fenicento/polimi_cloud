@@ -28,7 +28,7 @@ csvfile=open('politesi.json', 'rb')
 file=json.load(csvfile)
 print file[0].keys();
 for row in file:
-    kwds = row['keywords-eng'].split(";")
+    kwds = row['keywords-ita'].split(";")
     #print row['advisor']
     for k in kwds:
        
@@ -70,17 +70,19 @@ for row in file:
     
 print len(c)
 
-gen_file = open('general.json', 'wb')
-ing_file = open('ing.json', 'wb')
-arc_file = open('arc.json', 'wb')
-des_file = open('des.json', 'wb')
-ingI_file = open('ingI.json', 'wb')
-ingII_file = open('ingII.json', 'wb')
-ingIII_file = open('ingIII.json', 'wb')
-ingIV_file = open('ingIV.json', 'wb')
-ingV_file = open('ingV.json', 'wb')
-arcI_file = open('arcI.json', 'wb')
-arcII_file = open('arcII.json', 'wb')       
+gen_file = open('ITgeneral.json', 'wb')
+ing_file = open('ITing.json', 'wb')
+arc_file = open('ITarc.json', 'wb')
+des_file = open('ITdes.json', 'wb')
+ingI_file = open('ITingI.json', 'wb')
+ingII_file = open('ITingII.json', 'wb')
+ingIII_file = open('ITingIII.json', 'wb')
+ingIV_file = open('ITingIV.json', 'wb')
+ingV_file = open('ITingV.json', 'wb')
+arcI_file = open('ITarcI.json', 'wb')
+arcII_file = open('ITarcII.json', 'wb')
+
+total_file = open('ITtotal500.json', 'wb')    
        
 json.dump(c.most_common(),gen_file)
 json.dump(ing.most_common(),ing_file)
@@ -96,7 +98,7 @@ json.dump(arcII.most_common(),arcII_file)
 
 l=[]
 
-for key in c.most_common(301):
+for key in c.most_common(501):
     if len(key[0])>1:
         o={"name":key[0],"tot":key[1]}
         
@@ -144,7 +146,7 @@ for key in c.most_common(301):
             
         l.append(o)
         
-print l
+json.dump(l,total_file);
         
         
 
