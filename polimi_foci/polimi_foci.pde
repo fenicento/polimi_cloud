@@ -28,8 +28,8 @@ void setup() {
   smooth(8);
 
 
-  font = loadFont("agency.vlw");
-  textFont(font, 20);
+  font = loadFont("Lato-32.vlw");
+  textFont(font, 15);
   cam = new PeasyCam(this, 950);
   cam.lookAt(width/2, height/2, 0);
   physics = new MPhysics(new Vec(0, 0), new Vec(width, height));
@@ -87,7 +87,7 @@ void draw() {
   for (int i = 1; i < keywords.size() - 1; i++) {
     Keyword p = keywords.get(i);
     textAlign(LEFT);
-    textFont(font, 20);
+    textFont(font, 12);
     if (p.onScreen) drawTriangle(p);
     //if (p.onScreen) drawCircle(p);
   }
