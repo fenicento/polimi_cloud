@@ -1,3 +1,10 @@
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
 import java.lang.reflect.Field;
 import punktiert.math.Vec;
 import punktiert.physics.*;
@@ -21,12 +28,14 @@ float ra=450;
 String[] roman = {
   "I", "II", "III", "IV", "V"
 };
-
+Minim minim;
+AudioPlayer player;
 
 void setup() {
-  size(1920, 1080, OPENGL);
+  size(1920, 540, OPENGL);
   smooth(8);
-
+  minim = new Minim(this);
+  player = minim.loadFile("swosh1.wav");
 
   font = loadFont("Lato-32.vlw");
   textFont(font, 15);
@@ -88,8 +97,8 @@ void draw() {
     Keyword p = keywords.get(i);
     textAlign(LEFT);
     textFont(font, 12);
-    if (p.onScreen) drawTriangle(p);
-    //if (p.onScreen) drawCircle(p);
+    //if (p.onScreen) drawTriangle(p);
+    if (p.onScreen) drawCircle(p);
   }
   textAlign(CENTER);
   textFont(font, 32);
@@ -282,6 +291,8 @@ String convertToRoman(int nu) {
 
 
 void keyReleased() {
+  player.play();
+  player.rewind( );
   reset();
   if (key == ' ') {
     if (state==0) explode();
