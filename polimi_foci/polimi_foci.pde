@@ -32,7 +32,7 @@ Minim minim;
 AudioPlayer player;
 
 void setup() {
-  size(1920, 540, OPENGL);
+  size(1920, 1080, OPENGL);
   smooth(8);
   minim = new Minim(this);
   player = minim.loadFile("swosh1.wav");
