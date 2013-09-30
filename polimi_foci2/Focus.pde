@@ -29,7 +29,7 @@ Focus(String id, String n, float x, float y, int col) {
     ellipse(x,y,100,100);
     fill(0);
     rectMode(CENTER);
-    text(this.name.toUpperCase(),x,y,90,30);
+    text(this.name.toUpperCase(),x,y,90,36);
     
   }
   

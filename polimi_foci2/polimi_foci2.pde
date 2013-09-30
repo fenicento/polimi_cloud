@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import punktiert.math.Vec;
 import punktiert.physics.*;
 import peasy.*;
+import java.util.Arrays;
+import java.util.Iterator;
 
 AniSequence seq;
 PeasyCam cam;
@@ -31,6 +33,7 @@ String[] roman = {
 };
 Minim minim;
 AudioPlayer player;
+ArrayList<String> foci_str=new ArrayList<String>();
 
 void setup() {
   size(1920, 1080, OPENGL);
@@ -48,31 +51,30 @@ void setup() {
   physics = new MPhysics();
   physics.setfriction(0.6f);
 
-  ing = new Focus("ing","Engineering", width/2, 200,#835477);
-  arc = new Focus("arc","Architecture", width/5, height-200,#98D957);
-  des = new Focus("des","Design", 4*width/5, height-200,#F76634);
+  ing = new Focus("ing","Engineering", width/2, height/2,#835477);
+  arc = new Focus("arc","Architecture",  width/2, height/2,#98D957);
+  des = new Focus("des","Design",  width/2, height/2,#F76634);
 
   foci.add(ing);
   foci.add(arc);
   foci.add(des);
   
  
-  ingfoci.add(new Focus("ingI","Environmental and civil Engineering", 0, 0,#354749));
-  ingfoci.add(new Focus("ingII","Systems Engineering", 0, 0,#494A55));
-  ingfoci.add(new Focus("ingIII","Industrial processes Engineering", 0, 0,#6A4F69));
-  ingfoci.add(new Focus("ingIV","Industrial Engineering", 0, 0,#935781));
-  ingfoci.add(new Focus("ingV","Information Engineering", 0, 0,#C05E9C));
+  ingfoci.add(new Focus("ingI","Environmental and civil Engineering",  width/2, height/2,#354749));
+  ingfoci.add(new Focus("ingII","Systems Engineering",  width/2, height/2,#494A55));
+  ingfoci.add(new Focus("ingIII","Industrial processes Engineering", width/2, height/2,#6A4F69));
+  ingfoci.add(new Focus("ingIV","Industrial Engineering",  width/2, height/2,#935781));
+  ingfoci.add(new Focus("ingV","Information Engineering",  width/2, height/2,#C05E9C));
   
-  arcfoci.add(new Focus("arcI", "Architecture and society",0,0,#FCEE21));
-  arcfoci.add(new Focus("arcII", "Civil architecture",0,0,#3BB95F));
+  arcfoci.add(new Focus("arcI", "Architecture and society", width/2, height/2,#FCEE21));
+  arcfoci.add(new Focus("arcII", "Civil architecture", width/2, height/2,#3BB95F));
 
 
   loadKeywords();
 
-   compare(new String[] {
-     // "ingI","ingII","ingIII","ingIV","ingV","arcI","arcII","des"
-     "arcI","arcII","des","ingIII","ingIV"
-    });
+   foci_str.add("ingV");
+   foci_str.add("des");
+   compare();
 }
 
 void draw() {
@@ -202,33 +204,64 @@ String convertToRoman(int nu) {
 void keyReleased() {
   player.play();
   player.rewind( );
+  if(key=='a') {
+    String[] from = new String[]{
+    "ing",
+"arc",
+"des",
+"ingI",
+"ingII",
+"ingIII",
+"ingIV",
+"ingV",
+"arcI",
+"arcII"};
+float r= random(0,from.length-1);
+
+    if(!foci_str.contains(from[int(r)])) foci_str.add(from[int(r)]);
+  }
+  else if (key =='x') foci_str.remove(0);
+  //if(!foci_str.contains("ingII")) foci_str.add("ingII");
+  compare();
 }
 
 
 
-void compare(String[] items) {
+void compare() {
   
   state=2;
   counter=58;
+  ArrayList foci_copy=new ArrayList<String>(foci_str);
+  Iterator itr = comparing.iterator();
+      while(itr.hasNext()) {
+         Focus element = (Focus)itr.next();
+         if (!foci_copy.contains(element.id)) 
+         {
+           physics.removeParticle(element);
+           itr.remove();
+         }
+         else foci_copy.remove(element.id);
+      }
 
+  
   //find foci
-  for (int i = 0; i<items.length; i++) {
+  for (int i = 0; i<foci_copy.size(); i++) {
      //fac
     for (Focus fo : foci) {
-      if (fo.id.equals(items[i])) {
+      if (fo.id.equals(foci_copy.get(i))) {
         comparing.add(fo);
       }
     }
     
     //ing
     for (Focus fo : ingfoci) {
-      if (fo.id.equals(items[i])) {
+      if (fo.id.equals(foci_copy.get(i))) {
         comparing.add(fo);
       }
     }
     //arc
     for (Focus fo : arcfoci) {
-      if (fo.id.equals(items[i])) {
+      if (fo.id.equals(foci_copy.get(i))) {
         comparing.add(fo);
       }
     }
@@ -236,25 +269,38 @@ void compare(String[] items) {
   
   //position foci
   for (int i = 0; i<comparing.size(); i++) {
-    float nx=width/2+ra*cos(-TWO_PI/comparing.size()*i-HALF_PI);
-    float ny=height/2+ra*sin(-TWO_PI/comparing.size()*i-HALF_PI);
-    comparing.get(i).x=nx;
-    comparing.get(i).y=ny;
+    float nx=width/2+ra*cos(-TWO_PI/comparing.size()*i);
+    float ny=height/2+ra*sin(-TWO_PI/comparing.size()*i);
+    Ani.to(comparing.get(i), 0.3, "x", nx,Ani.QUART_OUT);
+    Ani.to(comparing.get(i), 0.3, "y", ny,Ani.QUART_OUT);
+    //comparing.get(i).x=nx;
+    //comparing.get(i).y=ny;
     physics.addParticle(comparing.get(i));
   }
 
   //assign nodes to foci
   for (Keyword ke : keywords) {
+    ke.behaviors.clear();
+    ke.addBehavior(new BCollision());
+    float rad=0;
     boolean found=false;
     for (Focus fo : comparing) {
       if (ke.getField(fo.id)>0) {
-        ke.radius=ke.radius+ke.getField(fo.id);
+        rad+=ke.getField(fo.id);
         found=true;
       }
     }
-    ke.radius=sqrt(ke.radius);
-    if (!found) ke.onScreen=false;
+    
+    if (!found) {
+     Ani.to(ke, 0.3, "radius", 0,Ani.QUART_OUT);
+      //ke.onScreen=false;
+    }
+    else {
+      if(!ke.onScreen) ke.onScreen=true;
+      Ani.to(ke, 1.0, "radius", sqrt(rad),Ani.QUART_OUT);
+    }
   }
+  addSeparation();
 }
 
 //adds separation
@@ -263,8 +309,6 @@ void addSeparation() {
    ke.addBehavior(ke.separation); 
  } 
 }
-
-
 
 void startAnimation() {
   
@@ -286,7 +330,7 @@ void startAnimation() {
       }
     }
     if(myx==0 || myy==0) {
-      k.onScreen=false;
+      //k.onScreen=false;
       //println(k.name);
     }
     else {
