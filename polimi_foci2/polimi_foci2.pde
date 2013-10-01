@@ -335,7 +335,7 @@ void startAnimation() {
     }
     else {
       //println(myx+" "+myy);
-      k.addBehavior(new BSeek(new Vec(myx+random(-200,200),myy+random(-200,200)),4.5));
+      k.addBehavior(new BSeek(new Vec(myx+random(-200,200),myy+random(-200,200)),3.5));
   }
 }
 }
