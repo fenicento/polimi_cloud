@@ -28,12 +28,14 @@ Focus des;
 int state=0;
 PFont font;
 float ra=450;
+Keyword vip_k;
 String[] roman = {
   "I", "II", "III", "IV", "V"
 };
 Minim minim;
 AudioPlayer player;
 ArrayList<String> foci_str=new ArrayList<String>();
+String vip = "mobile";
 
 void setup() {
   size(1920, 1080, OPENGL);
@@ -51,7 +53,7 @@ void setup() {
   physics = new MPhysics();
   physics.setfriction(0.6f);
 
-  ing = new Focus("ing","Engineering", width/2, height/2,#835477);
+  ing = new Focus("ing","Engineering", width/2, height/2,#713784);
   arc = new Focus("arc","Architecture",  width/2, height/2,#98D957);
   des = new Focus("des","Design",  width/2, height/2,#F76634);
 
@@ -60,11 +62,11 @@ void setup() {
   foci.add(des);
   
  
-  ingfoci.add(new Focus("ingI","Environmental and civil Engineering",  width/2, height/2,#354749));
-  ingfoci.add(new Focus("ingII","Systems Engineering",  width/2, height/2,#494A55));
-  ingfoci.add(new Focus("ingIII","Industrial processes Engineering", width/2, height/2,#6A4F69));
-  ingfoci.add(new Focus("ingIV","Industrial Engineering",  width/2, height/2,#935781));
-  ingfoci.add(new Focus("ingV","Information Engineering",  width/2, height/2,#C05E9C));
+  ingfoci.add(new Focus("ingI","Environmental and civil Engineering",  width/2, height/2,#1A175F));
+  ingfoci.add(new Focus("ingII","Systems Engineering",  width/2, height/2,#342269));
+  ingfoci.add(new Focus("ingIII","Industrial processes Engineering", width/2, height/2,#5b2e7a));
+  ingfoci.add(new Focus("ingIV","Industrial Engineering",  width/2, height/2,#88408E));
+  ingfoci.add(new Focus("ingV","Information Engineering",  width/2, height/2,#bb52a4));
   
   arcfoci.add(new Focus("arcI", "Architecture and society", width/2, height/2,#FCEE21));
   arcfoci.add(new Focus("arcII", "Civil architecture", width/2, height/2,#3BB95F));
@@ -105,7 +107,7 @@ void draw() {
     if (p.onScreen) drawCircle(p);
   }
   textAlign(CENTER);
-  textFont(font, 10);
+  
   for(Focus f : comparing) {
     f.draw();
   }
@@ -155,7 +157,13 @@ void drawCircle(Keyword p) {
       g=g+green(s.col)*p.getField(s.id)/mtot;
       b=b+blue(s.col)*p.getField(s.id)/mtot;
     }
-
+    if(p.name.equalsIgnoreCase(vip) && p.radius>0) {
+      vip_k=p;
+      stroke(255,240);
+      strokeWeight(2);
+      fill(0);
+      ellipse(x,y,m+7,m+7);
+    }
     color col = color(r, g, b); 
     fill(col, 160);
     noStroke();
@@ -171,26 +179,6 @@ void drawCircle(Keyword p) {
     if (m>11) text(p.name, m+4, m/2);
     popMatrix();
     hint(ENABLE_DEPTH_TEST);
-    
-    if(mouseX>p.x-p.radius*2 && mouseX<p.x+p.radius*2 && mouseY>p.y-p.radius*2 && mouseY<p.y+p.radius*2) {
-      println(p.name);
-      println ("-------");
-      println("ing "+ p.ing);
-      println("arc "+p.arc);
-      println("des "+p.des);
-      println("ingI "+p.ingI);
-      println("ingII "+p.ingII);
-      println("ingIII "+p.ingIII);
-      println("ingIV "+p.ingIV);
-      println("ingV "+p.ingV);
-      println("arcI "+p.arcI);
-      println("arcII "+p.arcII);
-      println("***********************");
-      stroke(255);
-      noFill();
-      ellipse(p.x,p.y,30,30);
-      text(p.name,p.x+30,p.y);
-    }
     
   }
   
@@ -335,7 +323,8 @@ void startAnimation() {
     }
     else {
       //println(myx+" "+myy);
-      k.addBehavior(new BSeek(new Vec(myx+random(-200,200),myy+random(-200,200)),4.5));
+      if(k.behaviors.size()>12) k.behaviors.remove(2);
+      k.addBehavior(new BSeek(new Vec(myx+random(-200,200),myy+random(-200,200)),4));
   }
 }
 }
