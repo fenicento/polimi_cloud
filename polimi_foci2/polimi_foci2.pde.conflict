@@ -323,8 +323,13 @@ void startAnimation() {
     }
     else {
       //println(myx+" "+myy);
+<<<<<<< HEAD
+      k.addBehavior(new BSeek(new Vec(myx+random(-200,200),myy+random(-200,200)),3.5));
+=======
       if(k.behaviors.size()>12) k.behaviors.remove(2);
       k.addBehavior(new BSeek(new Vec(myx+random(-200,200),myy+random(-200,200)),4));
+>>>>>>> da2f87876ed260e489938027b93939bf13a96926
   }
 }
 }
+

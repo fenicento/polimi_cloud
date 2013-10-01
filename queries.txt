@@ -1,0 +1,1 @@
+ SELECT target, COUNT(target) AS COUNT FROM links GROUP BY target ORDER BY COUNT(target) DESC;
