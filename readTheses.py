@@ -17,23 +17,25 @@ ingII=Counter()
 ingIII=Counter()
 ingIV=Counter()
 ingV=Counter()
+ingVI=Counter()
 
 arcI=Counter()
 arcII=Counter()
 
-
+keywords=list()
 
 csvfile=open('politesi.json', 'rb')
 
 file=json.load(csvfile)
 print file[0].keys();
 for row in file:
-    kwds = row['keywords-ita'].split(";")
+    kwds = row['keywords-eng'].split(";")
     #print row['advisor']
     for k in kwds:
        
         #GENERAL
         c.update([k.strip()])
+        keywords.append(k.strip())
         
         #FACULTIES
         try:  
@@ -61,6 +63,8 @@ for row in file:
                 ingIV.update([k.strip()])
             elif "ING V " in row['facolta']:
                 ingV.update([k.strip()])
+            elif "ING VI " in row['facolta']:
+                ingVI.update([k.strip()])
             elif "ARC I " in row['facolta']:
                 arcI.update([k.strip()])
             elif "ARC II " in row['facolta']:
@@ -70,7 +74,8 @@ for row in file:
     
 print len(c)
 
-gen_file = open('ITgeneral.json', 'wb')
+key_file = open('keys.json', 'wb')
+gen_file = open('general.json', 'wb')
 ing_file = open('ITing.json', 'wb')
 arc_file = open('ITarc.json', 'wb')
 des_file = open('ITdes.json', 'wb')
@@ -82,9 +87,9 @@ ingV_file = open('ITingV.json', 'wb')
 arcI_file = open('ITarcI.json', 'wb')
 arcII_file = open('ITarcII.json', 'wb')
 
-total_file = open('ITtotal500.json', 'wb')    
+total_file = open('total500.json', 'wb')    
        
-json.dump(c.most_common(),gen_file)
+json.dump(c.most_common(500),gen_file)
 json.dump(ing.most_common(),ing_file)
 json.dump(arc.most_common(),arc_file)
 json.dump(des.most_common(),des_file)
@@ -93,8 +98,11 @@ json.dump(ingII.most_common(),ingII_file)
 json.dump(ingIII.most_common(),ingIII_file)
 json.dump(ingIV.most_common(),ingIV_file)
 json.dump(ingV.most_common(),ingV_file)
+json.dump(ingVI.most_common(),ingV_file)
 json.dump(arcI.most_common(),arcI_file)
 json.dump(arcII.most_common(),arcII_file)
+
+json.dump(keywords[:500],key_file)
 
 l=[]
 
@@ -126,6 +134,11 @@ for key in c.most_common(501):
             o['ingV']=ingV[key[0]]
         else:
             o['ingV']=0
+
+        if ingV[key[0]] is not None:
+            o['ingVI']=ingVI[key[0]]
+        else:
+            o['ingVI']=0
             
         if arcI[key[0]] is not None:
             o['arcI']=arcI[key[0]]
